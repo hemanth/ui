@@ -1,10 +1,10 @@
 import Link from "next/link"
 import { Doc } from "contentlayer/generated"
+import { ChevronLeft, ChevronRight } from "lucide-react"
 import { NavItem, NavItemWithChildren } from "types/nav"
 
 import { docsConfig } from "@/config/docs"
-import { buttonVariants } from "@/components/ui/button"
-import { Icons } from "@/components/icons"
+import { Button } from "@/registry/new-york/ui/button"
 
 interface DocsPagerProps {
   doc: Doc
@@ -20,29 +20,30 @@ export function DocsPager({ doc }: DocsPagerProps) {
   return (
     <div className="flex flex-row items-center justify-between">
       {pager?.prev?.href && (
-        <Link
-          href={pager.prev.href}
-          className={buttonVariants({ variant: "outline" })}
-        >
-          <Icons.chevronLeft className="mr-2 h-4 w-4" />
-          {pager.prev.title}
-        </Link>
+        <Button variant="ghost" asChild>
+          <Link href={pager.prev.href}>
+            <ChevronLeft />
+            {pager.prev.title}
+          </Link>
+        </Button>
       )}
       {pager?.next?.href && (
-        <Link
-          href={pager.next.href}
-          className={buttonVariants({ variant: "outline" })}
-        >
-          {pager.next.title}
-          <Icons.chevronRight className="ml-2 h-4 w-4" />
-        </Link>
+        <Button variant="ghost" className="ml-auto" asChild>
+          <Link href={pager.next.href}>
+            {pager.next.title}
+            <ChevronRight />
+          </Link>
+        </Button>
       )}
     </div>
   )
 }
 
 export function getPagerForDoc(doc: Doc) {
-  const flattenedLinks = [null, ...flatten(docsConfig.sidebarNav), null]
+  const nav = doc.slug.startsWith("/docs/charts")
+    ? docsConfig.chartsNav
+    : docsConfig.sidebarNav
+  const flattenedLinks = [null, ...flatten(nav), null]
   const activeIndex = flattenedLinks.findIndex(
     (link) => doc.slug === link?.href
   )

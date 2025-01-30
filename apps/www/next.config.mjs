@@ -1,14 +1,25 @@
-import { withContentlayer } from "next-contentlayer"
+import { createContentlayerPlugin } from "next-contentlayer2"
 
 /** @type {import('next').NextConfig} */
 const nextConfig = {
+  experimental: {
+    outputFileTracingIncludes: {
+      "/blocks/*": ["./registry/**/*"],
+    },
+  },
   reactStrictMode: true,
   swcMinify: true,
   images: {
-    domains: ["avatars.githubusercontent.com", "images.unsplash.com"],
-  },
-  experimental: {
-    appDir: true,
+    remotePatterns: [
+      {
+        protocol: "https",
+        hostname: "avatars.githubusercontent.com",
+      },
+      {
+        protocol: "https",
+        hostname: "images.unsplash.com",
+      },
+    ],
   },
   redirects() {
     return [
@@ -24,7 +35,7 @@ const nextConfig = {
       },
       {
         source: "/examples",
-        destination: "/examples/dashboard",
+        destination: "/examples/mail",
         permanent: false,
       },
       {
@@ -39,11 +50,30 @@ const nextConfig = {
       },
       {
         source: "/docs/forms",
-        destination: "/docs/forms/react-hook-form",
+        destination: "/docs/components/form",
         permanent: false,
+      },
+      {
+        source: "/docs/forms/react-hook-form",
+        destination: "/docs/components/form",
+        permanent: false,
+      },
+      {
+        source: "/sidebar",
+        destination: "/docs/components/sidebar",
+        permanent: true,
+      },
+      {
+        source: "/react-19",
+        destination: "/docs/react-19",
+        permanent: true,
       },
     ]
   },
 }
+
+const withContentlayer = createContentlayerPlugin({
+  // Additional Contentlayer config options
+})
 
 export default withContentlayer(nextConfig)
